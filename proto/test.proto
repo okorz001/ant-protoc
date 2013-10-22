@@ -1,0 +1,5 @@
+package test;
+
+message Foo {
+    required uint32 bar = 1;
+}

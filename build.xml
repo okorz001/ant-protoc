@@ -1,0 +1,42 @@
+<project name="ant-protoc" default="test">
+    <property name="bin" location="bin"/>
+    <property name="jar" location="${ant.project.name}.jar"/>
+
+    <target name="build">
+        <mkdir dir="${bin}"/>
+        <javac destdir="${bin}" srcdir="src"
+            source="1.5" target="1.5"
+            includeAntRuntime="true"/>
+        <jar destfile="${jar}" basedir="${bin}"/>
+    </target>
+
+    <property name="gen" location="gen"/>
+    <property name="gen.cpp" location="${gen}/cpp"/>
+    <property name="gen.java" location="${gen}/java"/>
+    <property name="gen.python" location="${gen}/python"/>
+
+    <target name="test" depends="build">
+        <taskdef name="protoc" classname="org.korz.ant.ProtocTask">
+            <classpath>
+                <pathelement location="${jar}"/>
+            </classpath>
+        </taskdef>
+
+        <mkdir dir="${gen.cpp}"/>
+        <mkdir dir="${gen.java}"/>
+        <mkdir dir="${gen.python}"/>
+        <protoc srcfile="proto/test.proto"
+            protoPath="proto"
+            cppOut="${gen.cpp}"
+            javaOut="${gen.java}"
+            pythonOut="${gen.python}"/>
+    </target>
+
+    <target name="clean">
+        <delete includeemptydirs="true" verbose="true">
+            <fileset dir="${bin}" erroronmissingdir="false"/>
+            <fileset file="${jar}"/>
+            <fileset dir="${gen}" erroronmissingdir="false"/>
+        </delete>
+    </target>
+</project>
